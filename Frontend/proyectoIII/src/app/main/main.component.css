@@ -11,7 +11,7 @@
     padding: 10px;
     top: 20px;
     margin: 30px;
-    width: 75%;
+    width: 85%;
     margin: 0 auto;
     float: none;
     margin-bottom: 10px;
@@ -34,7 +34,7 @@
 
 .title {
     float: right;
-    margin-right: 72px;
+    margin-right: 10%;
 }
 
 .message-form {

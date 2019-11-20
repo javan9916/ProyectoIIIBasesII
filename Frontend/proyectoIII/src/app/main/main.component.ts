@@ -27,6 +27,7 @@ export class MainComponent implements OnInit {
   lotsData: any;
   messageForm: FormGroup;
   username: '';
+  crss: Curso[];
   msjs = mensajes;
   blank = ' ';
 
@@ -34,6 +35,7 @@ export class MainComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.data = cursos;
+    this.crss = cursos;
 
     this.messageForm = this.formBuilder.group({
       username: ['', Validators.required],
