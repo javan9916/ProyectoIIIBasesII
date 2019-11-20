@@ -116,4 +116,25 @@ GO
 EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 2, @activo = 1
 
 
+CREATE PROCEDURE Mostrar_Estudiantes_Curso
+@codigo_curso as int
+AS
+BEGIN
+	SELECT nombre FROM (Estudiantes INNER JOIN Estudiantes_Cursos ON 
+		Estudiantes_Cursos.codigo_curso = @codigo_curso and Estudiantes_Cursos.codigo_estudiante = codigo)
+END
+GO
 
+EXECUTE Mostrar_Estudiantes_Curso @codigo_curso = 2
+
+
+CREATE PROCEDURE Mostrar_Profesores_Curso
+@codigo_curso as int
+AS
+BEGIN
+	SELECT nombre FROM (Profesores INNER JOIN Profesores_Cursos ON 
+		Profesores_Cursos.codigo_curso = @codigo_curso and Profesores_Cursos.codigo_profesor = codigo)
+END
+GO
+
+EXECUTE Mostrar_Profesores_Curso @codigo_curso = 1
