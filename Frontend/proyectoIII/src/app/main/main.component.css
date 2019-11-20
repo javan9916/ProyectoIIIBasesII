@@ -32,6 +32,11 @@
     height: 90%;
 }
 
+.title {
+    float: right;
+    margin-right: 72px;
+}
+
 .message-form {
     width: 95%;
 }

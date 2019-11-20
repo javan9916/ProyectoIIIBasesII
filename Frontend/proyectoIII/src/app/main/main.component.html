@@ -39,11 +39,14 @@
             <mat-form-field style="width: 40%;">
                 <mat-label>Cursos</mat-label>
                 <mat-select>
-                    <mat-option *ngFor="let curso of cursos" [value]="curso.name">
-                        {{ curso.name }}
+                    <mat-option *ngFor="let curso of cursos" [value]="curso.nombre">
+                        {{ curso.nombre }}
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+            <div class="title">
+                <h4>Miembros</h4>
+            </div>
             <mat-grid-list cols="5" rowHeight="100px">
                 <mat-grid-tile colspan="4" rowspan="2">
                     <mat-list style="width: 95%;">
@@ -54,9 +57,6 @@
                 </mat-grid-tile>
                 <mat-grid-tile colspan="1" rowspan="3" >
                         <mat-list >
-                            <div style="text-align: center;">
-                                <h4>Miembros</h4>
-                            </div>
                             <mat-list-item>
                                 <mat-radio-button>Javier Antonio A.</mat-radio-button>
                             </mat-list-item>

@@ -12,7 +12,14 @@ export class ResolverService implements Resolve<any> {
   constructor(private _http: HttpClient) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    console.log('Logging collected route parameter');
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        console.log(pos.coords);
+      });
+    } else {
+      console.log("La geolocalización no es soportada por este navegador");
+    }
+    
     return this._http.get('https://jsonplaceholder.typicode.com/posts');
   }
 }
