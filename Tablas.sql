@@ -1,13 +1,24 @@
 create table Esclavos(
-	usuario			VARCHAR(50) PRIMARY KEY NOT NULL,
+	usuario			VARCHAR(50) NOT NULL,
 	contraseña		VARCHAR(20) NOT NULL,
 	direccion_ip	VARCHAR(15) CHECK(direccion_ip LIKE '%_%.%_%.%_%.%_%' AND direccion_ip NOT LIKE '%.%.%.%.%' AND 
 										(ParseName(direccion_ip, 4) BETWEEN 0 AND 255) 
 										AND (ParseName(direccion_ip, 3) BETWEEN 0 AND 255) 
 										AND (ParseName(direccion_ip, 2) BETWEEN 0 AND 255) 
 										AND (ParseName(direccion_ip, 1) BETWEEN 0 AND 255)) NOT NULL,
-	nombre_db		VARCHAR(50)	NOT NULL
+	nombre_db		VARCHAR(50)	NOT NULL,
+	ubicacion		GEOGRAPHY	NOT NULL
 );
+
+insert into Esclavos (usuario,contraseña,direccion_ip,nombre_db,ubicacion) values ('sa','2018100294','172.24.80.4','distribution-master',
+		geography::Point(10.3659267,-84.5114403, 4326));
+-- Coordenada del TEC
+
+insert into Esclavos (usuario,contraseña,direccion_ip,nombre_db,ubicacion) values ('sa','12345','126.123.64.7','eslave1',
+		geography::Point(10.3125638,-84.4168282, 4326));
+--Coordenada de La Isla (Casa de Roberto XD)
+
+select * from Esclavos;
 
 create table Profesores(
 	codigo		int primary key,
@@ -78,14 +89,14 @@ ON Estudiantes_Cursos.codigo_estudiante = 2;
 ---DROP PROCEDURE Agregar_Esclavo
 
 CREATE PROCEDURE Agregar_Esclavo
-@usuario VARCHAR(50), @contraseña VARCHAR(20), @direccion_ip VARCHAR(15), @nombre_db VARCHAR(50)
+@usuario VARCHAR(50), @contraseña VARCHAR(20), @direccion_ip VARCHAR(15), @nombre_db VARCHAR(50), @ubicacion GEOGRAPHY
 AS
 BEGIN
-	INSERT INTO Esclavos(usuario, contraseña, direccion_ip, nombre_db)
-	VALUES (@usuario, @contraseña, @direccion_ip, @nombre_db)
+	INSERT INTO Esclavos(usuario, contraseña, direccion_ip, nombre_db, ubicacion)
+	VALUES (@usuario, @contraseña, @direccion_ip, @nombre_db, @ubicacion)
 END
 
-EXECUTE Agregar_Esclavo @usuario = 'roberto', @contraseña = '123', @direccion_ip = '126.123.64.7', @nombre_db = 'Eslave1'
+--EXECUTE Agregar_Esclavo @usuario = 'roberto', @contraseña = '123', @direccion_ip = '126.123.64.7', @nombre_db = 'Eslave1', @ubicacion = geography::Point(10.3125638,-84.4168282, 4326);
 
 
 CREATE PROCEDURE Mostrar_Cursos_Estudiantes
@@ -138,3 +149,24 @@ END
 GO
 
 EXECUTE Mostrar_Profesores_Curso @codigo_curso = 1
+
+
+CREATE PROCEDURE Buscar_Esclavo_Cercano
+@ubicacion_actual as geography
+AS
+BEGIN
+	SELECT usuario,contraseña,direccion_ip,nombre_db, CONVERT(DECIMAL(12,2),ubicacion.STDistance(@ubicacion_actual)) Distancia
+	FROM Esclavos
+	ORDER BY Distancia asc
+END
+GO
+
+drop procedure Buscar_Esclavo_Cercano
+
+-- Se debe declarar primero una variable para poder enviar un dato geography a un procedimiento
+DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213', '4326');
+-- Coordenada de Florencia
+
+EXECUTE Buscar_Esclavo_Cercano @ubicacion_actual = @geographyPoint;
+
+SELECT ubicacion.STAsText() from Esclavos
