@@ -1,0 +1,45 @@
+.conjunto-form {
+    width: 100%;
+}
+
+.mat-list {
+    max-height: 95%;
+    overflow: auto;
+}
+
+.mat-card {
+    padding: 10px;
+    top: 20px;
+    margin: 30px;
+    width: 75%;
+    margin: 0 auto;
+    float: none;
+    margin-bottom: 10px;
+}
+
+.slide {
+    float: right;
+    margin-right: 10px;
+}
+  
+.form-field {
+    width: 50%;
+    padding-right: 10px;
+}
+
+.ta {
+    width: 95%;
+    height: 90%;
+}
+
+.message-form {
+    width: 95%;
+}
+
+.mat-card-content {
+    padding-left: 15px;
+}
+
+table {
+    width: 100%;
+}

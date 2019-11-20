@@ -1,0 +1,23 @@
+.loginMain{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+mat-card {
+    text-align: center;
+    margin: auto;
+    width: 30%;
+    display: block;
+    margin-top: 10rem;
+}
+
+mat-form-field, input {
+    width: 100%;
+}
+
+button {
+    display: block;
+    width: 100%;
+}

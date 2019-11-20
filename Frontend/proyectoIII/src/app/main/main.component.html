@@ -1,0 +1,79 @@
+<div class="content">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Cursos Matriculados</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="slide">
+                <mat-slide-toggle> Activos/Inactivos </mat-slide-toggle>
+            </div>
+            <br><br><br>
+            <div class="table-container">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" #mytable>
+            
+                  <!-- Columna Nombre -->
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre del Curso </th>
+                    <td mat-cell *matCellDef="let element; let i = index"> {{element.name}} </td>
+                  </ng-container>
+            
+                  <!-- Columna Código -->
+                  <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Código </th>
+                    <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+                  </ng-container>
+            
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+              </div>
+              <br>
+        </mat-card-content>
+    </mat-card>
+    <br>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Mensajería</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field style="width: 40%;">
+                <mat-label>Cursos</mat-label>
+                <mat-select>
+                    <mat-option *ngFor="let curso of cursos" [value]="curso.name">
+                        {{ curso.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-grid-list cols="5" rowHeight="100px">
+                <mat-grid-tile colspan="4" rowspan="2">
+                    <mat-form-field class="ta">
+                        <textarea matInput disabled style="height: 90px;"></textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="1" rowspan="3" >
+                        <mat-list >
+                            <div style="text-align: center;">
+                                <h4>Miembros</h4>
+                            </div>
+                            <mat-list-item>
+                                <mat-radio-button>Javier Antonio A.</mat-radio-button>
+                            </mat-list-item>
+                            <mat-list-item>
+                                <mat-radio-button>Jazmine E.</mat-radio-button>
+                            </mat-list-item>
+                        </mat-list>  
+                </mat-grid-tile>
+                <mat-grid-tile colspan="4" rowspan="1">
+                    <div class="message-form">
+                        <form [formGroup]="messageForm" (ngSubmit)="onSubmit()">
+                            <mat-form-field style="width: 82%; margin-right: 3%;" >
+                                <input matInput type="text" id="message" placeholder="Mensaje" formControlName="message" required>
+                            </mat-form-field>
+                            <button mat-raised-button style="width: 15%;" color="primary" type="submit">Enviar</button>
+                        </form>
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </mat-card-content>
+    </mat-card>
+</div>
