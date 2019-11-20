@@ -5,7 +5,11 @@ import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Curso } from '../models/curso';
 import { Mensaje } from '../models/mensaje';
 
-var cursos: Curso[] = [];
+var cursos: Curso[] = [{codigo: 1, nombre: 'Análisis de algoritmos'},
+                        {codigo: 2, nombre: 'Lenguajes de programación'},
+                        {codigo: 3, nombre: 'Probabilidades'}, 
+                        {codigo: 4, nombre: 'Bases de datos II'}];
+
 var mensajes: Mensaje[] = [ {codigo: 1, emisor: 'Jazmine', receptor: 'Javier', mensaje: 'Hola, ¿cómo está?'},
                             {codigo: 2, emisor: 'Javier', receptor: 'Jazmine', mensaje: 'Súper bien, ¡pasé algoritmos!'},
                             {codigo: 3, emisor: 'Jazmine', receptor: 'Javier', mensaje: '¡Qué bueno, me alegro!'},
@@ -29,6 +33,8 @@ export class MainComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.dataSource.data = cursos;
+
     this.messageForm = this.formBuilder.group({
       username: ['', Validators.required],
       message: ['', Validators.required]

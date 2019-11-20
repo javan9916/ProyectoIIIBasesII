@@ -13,14 +13,14 @@
             
                   <!-- Columna Nombre -->
                   <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre del Curso </th>
-                    <td mat-cell *matCellDef="let element; let i = index"> {{element.name}} </td>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                    <td mat-cell *matCellDef="let element; let i = index"> {{element.nombre}} </td>
                   </ng-container>
             
                   <!-- Columna Código -->
                   <ng-container matColumnDef="code">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Código </th>
-                    <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+                    <td mat-cell *matCellDef="let element"> {{element.codigo}} </td>
                   </ng-container>
             
                   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
