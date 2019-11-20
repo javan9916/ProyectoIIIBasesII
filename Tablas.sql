@@ -152,12 +152,15 @@ EXECUTE Mostrar_Profesores_Curso @codigo_curso = 1
 
 
 CREATE PROCEDURE Buscar_Esclavo_Cercano
-@ubicacion_actual as geography
+@latitud as float, @longitud as float
 AS
+DECLARE @ubicacion_actual geography = 
+		Geography::STPointFromText('POINT(' + CAST(@latitud AS VARCHAR(20)) + ' ' + CAST(@longitud AS VARCHAR(20)) + ')', 4326)
+	
 BEGIN
-	SELECT usuario,contraseña,direccion_ip,nombre_db, CONVERT(DECIMAL(12,2),ubicacion.STDistance(@ubicacion_actual)) Distancia
+	SELECT TOP 1 usuario,contraseña,direccion_ip,nombre_db, CONVERT(DECIMAL(12,2),ubicacion.STDistance(@ubicacion_actual)) distancia
 	FROM Esclavos
-	ORDER BY Distancia asc
+	ORDER BY distancia asc
 END
 GO
 
@@ -167,6 +170,7 @@ drop procedure Buscar_Esclavo_Cercano
 DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213', '4326');
 -- Coordenada de Florencia
 
-EXECUTE Buscar_Esclavo_Cercano @ubicacion_actual = @geographyPoint;
+EXECUTE Buscar_Esclavo_Cercano @latitud = -84.4747213, @longitud = 10.3642467;
 
 SELECT ubicacion.STAsText() from Esclavos
+
