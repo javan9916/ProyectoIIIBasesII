@@ -301,15 +301,26 @@ CREATE PROCEDURE LOGEO(
 as 
 begin 
  
-	DECLARE @Sesiones AS INTEGER;
+	DECLARE @ID AS varchar(25);
 
-	Set @Sesiones = (select COUNT(*) from Profesores
-		where codigo=@Usuario and contraseña=@Contraseña)
-
-	Set @Sesiones = @Sesiones + (select COUNT(*) from Profesores
-		where codigo=@Usuario and contraseña=@Contraseña)
-
-	Select @Sesiones
+	IF EXISTS (SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña) 
+		BEGIN
+			SET @ID = (SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña) 
+		    SELECT @ID
+		END
+		ELSE
+			BEGIN
+				IF EXISTS (SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña) 
+			BEGIN
+				SET @ID = (SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña)
+				SELECT @ID
+			END
+			ELSE
+			BEGIN
+				SET @ID = 'El nombre de Usuario o contraseña no coinsiden';
+				SELECT @ID
+			END
+		END
 
 end
 
