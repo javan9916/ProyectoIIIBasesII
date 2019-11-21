@@ -138,7 +138,7 @@ GO
 
 EXECUTE Mostrar_Profesores_Curso @codigo_curso = 1
 
-
+-- Busca el usuario mas cercano a partir de la latitud y longitud actual del usuario 
 CREATE PROCEDURE Buscar_Esclavo_Cercano
 @latitud as float, @longitud as float
 AS
@@ -160,7 +160,26 @@ DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213',
 
 EXECUTE Buscar_Esclavo_Cercano @latitud = -84.4747213, @longitud = 10.3642467;
 
-SELECT ubicacion.STAsText() from Esclavos
+SELECT ubicacion.STAsText() from Esclavos;
+
+-- Insertar Mensajes
+CREATE PROCEDURE Insertar_Mensaje
+@tipo as int, @emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+BEGIN
+	INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) VALUES (@tipo,@emisor,@receptor,@mensaje,@codigo_curso);
+END
+GO
+
+CREATE PROCEDURE Ver_Mensajes_E_E
+@emisor as int, @receptor as int
+AS
+BEGIN
+	
+END
+GO
+
+SELECT * FROM Mensajes
 
 -- INSERTS 
 INSERT INTO Estudiantes (codigo,nombre,contraseña) values (1,'Jazmine','12');
@@ -213,8 +232,5 @@ INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (3,8);
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (4,9);
 -- Lenguajes de Programacion
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (5,10);
-
-
-INSERT INTO Mensajes (codigo,emisor,receptor,mensaje) values (1,1,1,'Hola');
 
 SELECT * FROM Estudiantes;
