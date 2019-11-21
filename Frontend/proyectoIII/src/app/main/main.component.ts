@@ -10,7 +10,7 @@ var cursos: Curso[] = [{codigo: 1, nombre: 'Análisis de algoritmos'},
                         {codigo: 3, nombre: 'Probabilidades'}, 
                         {codigo: 4, nombre: 'Bases de datos II'}];
 
-var mensajes: Mensaje[] = [ {codigo: 1, emisor: 'Jazmine', receptor: 'Javier', mensaje: 'Hola, ¿cómo está?'},
+var mensajes: Mensaje[] = [ {codigo: 1, emisor: 'Jazmine', receptor: 'Javier', mensaje: 'Hola, ¿cómo está? \u{1F60A}'},
                             {codigo: 2, emisor: 'Javier', receptor: 'Jazmine', mensaje: 'Súper bien, ¡pasé algoritmos!'},
                             {codigo: 3, emisor: 'Jazmine', receptor: 'Javier', mensaje: '¡Qué bueno, me alegro!'},
                             {codigo: 4, emisor: 'Javier', receptor: 'Jazmine', mensaje: ':)'}];
