@@ -53,7 +53,7 @@ create table Estudiantes_Cursos(
 
 -- Mensajes a nivel general
 create table Mensajes(
-	id_mensaje		int primary key, 
+	id_mensaje		int identity(1,1) primary key, 
 	mensaje			varchar(500) not null,
 	codigo_curso	int foreign key (codigo_curso) references Cursos(codigo)
 );
@@ -87,7 +87,7 @@ create table Mensajes_Profesor_Grupo(
 );
 
 -- Mensajes de Estudiantes a Grupo
-create table Mensajes_Estudiantes_Grupo(
+create table Mensajes_Estudiante_Grupo(
 	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
 	emisor			int foreign key (emisor) references Estudiantes(codigo),
 	receptor		int foreign key (receptor) references Cursos(codigo),
@@ -97,7 +97,7 @@ create table Mensajes_Estudiantes_Grupo(
 SELECT nombre
 FROM Cursos
 INNER JOIN Estudiantes_Cursos
-ON Estudiantes_Cursos.codigo_estudiante = 2;
+ON Estudiantes_Cursos.codigo_estudiante = 5;
 
 ---DROP PROCEDURE Agregar_Esclavo
 
@@ -187,25 +187,86 @@ EXECUTE Buscar_Esclavo_Cercano @latitud = -84.4747213, @longitud = 10.3642467;
 
 SELECT ubicacion.STAsText() from Esclavos;
 
--- Insertar Mensajes
-CREATE PROCEDURE Insertar_Mensaje
-@tipo as int, @emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+-- Agregar un nuevo mensaje en comunicacion de Estudiante a Estudiante
+CREATE PROCEDURE Insertar_Mensaje_E_E
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
 AS
+DECLARE @codigo_mensaje as int
 BEGIN
-	INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) VALUES (@tipo,@emisor,@receptor,@mensaje,@codigo_curso);
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Estudiante_Estudiante(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
 END
 GO
 
-INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) values (1,1,6,'Hola \u{1F604}',1);
-EXECUTE Insertar_Mensaje @tipo = 0, @emisor= 1, @receptor = 2, @mensaje = 'Hola Roberto \u{1F604}', @codigo_curso = 1;
+EXECUTE Insertar_Mensaje_E_E @emisor = 1, @receptor = 2, @mensaje = 'Hola Roberto \u{1F604}', @codigo_curso = 1;
 
-CREATE PROCEDURE Ver_Mensajes_E_E
-@emisor as int, @receptor as int
+-- Agregar un nuevo mensaje en comunicacion de Estudiante a Profesor
+CREATE PROCEDURE Insertar_Mensaje_E_P
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
 AS
+DECLARE @codigo_mensaje as int
 BEGIN
-	
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Estudiante_Profesor(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
 END
 GO
+
+EXECUTE Insertar_Mensaje_E_P @emisor = 1, @receptor = 6, @mensaje = 'Hola Leo\u{1F604}', @codigo_curso = 1;
+
+-- Agregar un nuevo mensaje en comunicacion de Profesor a Estudiante
+CREATE PROCEDURE Insertar_Mensaje_P_E
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+DECLARE @codigo_mensaje as int
+BEGIN
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Profesor_Estudiante(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
+END
+GO
+
+EXECUTE Insertar_Mensaje_P_E @emisor = 7, @receptor = 3, @mensaje = 'Hola estudiante\u{1F604}', @codigo_curso = 2;
+
+-- Agregar un nuevo mensaje en comunicacion de Estudiante a Grupo
+CREATE PROCEDURE Insertar_Mensaje_E_G
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+DECLARE @codigo_mensaje as int
+BEGIN
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Estudiante_Grupo(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
+END
+GO
+
+EXECUTE Insertar_Mensaje_E_G @emisor = 4, @receptor = 1, @mensaje = 'Hola compañeros y profesor\u{1F604}', @codigo_curso = 3;
+
+-- Agregar un nuevo mensaje en comunicacion de Profesor a Grupo
+CREATE PROCEDURE Insertar_Mensaje_P_G
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+DECLARE @codigo_mensaje as int
+BEGIN
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Profesor_Grupo(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
+END
+GO
+
+EXECUTE Insertar_Mensaje_P_G @emisor = 8, @receptor = 3, @mensaje = 'Hola queridos estudiantes \u{1F604}', @codigo_curso = 3;
+
 
 SELECT * FROM Mensajes
 
