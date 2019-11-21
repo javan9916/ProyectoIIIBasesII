@@ -93,12 +93,6 @@ create table Mensajes_Estudiante_Grupo(
 	receptor		int foreign key (receptor) references Cursos(codigo),
 );
 
---Consulta buscar nombre de id de la tabla Mensajes
-SELECT nombre
-FROM Cursos
-INNER JOIN Estudiantes_Cursos
-ON Estudiantes_Cursos.codigo_estudiante = 5;
-
 ---DROP PROCEDURE Agregar_Esclavo
 
 CREATE PROCEDURE Agregar_Esclavo
@@ -265,8 +259,15 @@ BEGIN
 END
 GO
 
-EXECUTE Insertar_Mensaje_P_G @emisor = 8, @receptor = 3, @mensaje = 'Hola queridos estudiantes \u{1F604}', @codigo_curso = 3;
+EXECUTE Insertar_Mensaje_P_G @emisor = 8, @receptor = 3, @mensaje = 'Hola muchachos \u{1F604}', @codigo_curso = 3;
 
+CREATE PROCEDURE Ver_Mensajes_E_E
+@estudiante1 as varchar(200), @estudiante2 as varchar, @codigo_curso as int
+AS
+BEGIN
+	
+END
+GO
 
 SELECT * FROM Mensajes
 
@@ -322,5 +323,24 @@ INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (4,9);
 -- Lenguajes de Programacion --> OscarViquez
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (5,10);
 
+select Estudiantes.nombre as E1, Estudiantes.nombre as E2 from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante INNER JOIN Mensajes on Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
 
-SELECT * FROM Mensajes;
+select emisor, receptor, mensaje from Mensajes_Estudiante_Estudiante INNER JOIN Mensajes on 
+Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
+
+select nombre as E1, nombre as E2, emisor, receptor, mensaje from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on 
+Estudiantes.codigo = emisor and Estudiantes.codigo = receptor INNER JOIN Mensajes on 
+Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
+
+
+select nombre as E1, nombre as E2, emisor, receptor, mensaje from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on 
+Mensajes_Estudiante_Estudiante.emisor = emisor and Mensajes_Estudiante_Estudiante.receptor = receptor JOIN Mensajes on 
+Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
+
+
+
+select nombre as E1, nombre as E2 from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on emisor = 1 and receptor = 2;
