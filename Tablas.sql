@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-
-=======
 -- Tabla para almacenar las bases replicadas, solo estará presente en la madre
->>>>>>> 2c1cb8ee379a6aa72ce275e69f76f62fc35f6b7a
+
 create table Esclavos(
 	usuario			VARCHAR(50) NOT NULL,
 	contraseña		VARCHAR(20) NOT NULL,
@@ -36,11 +33,7 @@ create table Estudiantes(
 	nombre		varchar(200) not null,
 	contraseña	varchar(15)	 not null
 );
-<<<<<<< HEAD
---drop table Cursos
-=======
 
->>>>>>> 2c1cb8ee379a6aa72ce275e69f76f62fc35f6b7a
 create table Cursos(
 	codigo		int primary key,
 	nombre		varchar(200) not null,
@@ -87,19 +80,13 @@ create table Mensajes_Profesor_Estudiante(
 	receptor		int foreign key (receptor) references Estudiantes(codigo),
 );
 
-<<<<<<< HEAD
-SELECT * FROM Cursos;
 
-SELECT * FROM Estudiantes_Cursos;
-SELECT * FROM Profesores;
-=======
 -- Mensajes de Profesor a Grupo
 create table Mensajes_Profesor_Grupo(
 	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
 	emisor			int foreign key (emisor) references Profesores(codigo),
 	receptor		int foreign key (receptor) references Cursos(codigo),
 );
->>>>>>> 2c1cb8ee379a6aa72ce275e69f76f62fc35f6b7a
 
 -- Mensajes de Estudiantes a Grupo
 create table Mensajes_Estudiante_Grupo(
@@ -282,15 +269,7 @@ GO
 
 EXECUTE Insertar_Mensaje_P_G @emisor = 8, @receptor = 3, @mensaje = 'Hola muchachos \u{1F604}', @codigo_curso = 3;
 
-CREATE PROCEDURE Ver_Mensajes_E_E
-@estudiante1 as varchar(200), @estudiante2 as varchar, @codigo_curso as int
-AS
-BEGIN
-	
-END
-GO
 
-<<<<<<< HEAD
 --Iniciar Sesion
 
 --Drop procedure LOGEO
@@ -315,8 +294,6 @@ end
 
 EXECUTE LOGEO @Usuario='1', @Contraseña = '12345';
 
-
-=======
 SELECT * FROM Mensajes
 
 -- INSERTS 
@@ -392,4 +369,3 @@ and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante
 
 
 select nombre as E1, nombre as E2 from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on emisor = 1 and receptor = 2;
->>>>>>> 2c1cb8ee379a6aa72ce275e69f76f62fc35f6b7a
