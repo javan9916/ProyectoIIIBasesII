@@ -52,11 +52,13 @@ create table Estudiantes_Cursos(
 );
 
 -- Mensajes a nivel general
+-- TIPO: Estudiante-Estudiante = 0, Estudiante-Profesor = 1, Estudiante-Grupo = 3, Profesor-Grupo = 4
 create table Mensajes(
-	codigo		int primary key,
-	emisor		int,
-	receptor	int,
-	mensaje		varchar(500) not null,
+	tipo			int not null, 
+	emisor			int not null,
+	receptor		int not null,
+	mensaje			varchar(500) not null,
+	codigo_curso	int foreign key (codigo_curso) references Cursos(codigo)
 );
 
 -- Foreign Key de todas las tablas posibles emisoras y receptoras
@@ -64,7 +66,7 @@ alter table Mensajes add constraint fk_emisor_e foreign key (emisor) references 
 alter table Mensajes add constraint fk_emisor_p foreign key (emisor) references Profesores;
 alter table Mensajes add constraint fk_receptor_e foreign key (receptor) references Estudiantes;
 alter table Mensajes add constraint fk_receptor_p foreign key (receptor) references Profesores;
-alter table Mensajes add constraint fk_receptor_c foreign key (receptor) references Estudiantes;
+alter table Mensajes add constraint fk_receptor_c foreign key (receptor) references Cursos;
 
 --Consulta buscar nombre de id de la tabla Mensajes
 SELECT nombre
@@ -215,4 +217,4 @@ INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (5,10);
 
 INSERT INTO Mensajes (codigo,emisor,receptor,mensaje) values (1,1,1,'Hola');
 
-SELECT * FROM Profesores_Cursos;
+SELECT * FROM Estudiantes;
