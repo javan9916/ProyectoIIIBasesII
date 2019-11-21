@@ -1,4 +1,5 @@
 -- Tabla para almacenar las bases replicadas, solo estará presente en la madre
+
 create table Esclavos(
 	usuario			VARCHAR(50) NOT NULL,
 	contraseña		VARCHAR(20) NOT NULL,
@@ -53,7 +54,7 @@ create table Estudiantes_Cursos(
 
 -- Mensajes a nivel general
 create table Mensajes(
-	id_mensaje		int primary key, 
+	id_mensaje		int identity(1,1) primary key, 
 	mensaje			varchar(500) not null,
 	codigo_curso	int foreign key (codigo_curso) references Cursos(codigo)
 );
@@ -79,6 +80,7 @@ create table Mensajes_Profesor_Estudiante(
 	receptor		int foreign key (receptor) references Estudiantes(codigo),
 );
 
+
 -- Mensajes de Profesor a Grupo
 create table Mensajes_Profesor_Grupo(
 	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
@@ -87,17 +89,11 @@ create table Mensajes_Profesor_Grupo(
 );
 
 -- Mensajes de Estudiantes a Grupo
-create table Mensajes_Estudiantes_Grupo(
+create table Mensajes_Estudiante_Grupo(
 	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
 	emisor			int foreign key (emisor) references Estudiantes(codigo),
 	receptor		int foreign key (receptor) references Cursos(codigo),
 );
-
---Consulta buscar nombre de id de la tabla Mensajes
-SELECT nombre
-FROM Cursos
-INNER JOIN Estudiantes_Cursos
-ON Estudiantes_Cursos.codigo_estudiante = 2;
 
 ---DROP PROCEDURE Agregar_Esclavo
 
@@ -125,7 +121,7 @@ GO
 
 EXECUTE Mostrar_Cursos_Estudiantes @codigo_estudiante = 2, @activo = 0
 
-
+go
 CREATE PROCEDURE Mostrar_Cursos_Profesores
 @codigo_profesor as int, @activo as bit
 AS
@@ -137,7 +133,9 @@ BEGIN
 END
 GO
 
-EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 6, @activo = 1
+Select * from Profesores_Cursos
+
+EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 3, @activo = 0
 
 
 CREATE PROCEDURE Mostrar_Estudiantes_Curso
@@ -177,35 +175,131 @@ BEGIN
 END
 GO
 
-drop procedure Buscar_Esclavo_Cercano
+--drop procedure Buscar_Esclavo_Cercano
 
 -- Se debe declarar primero una variable para poder enviar un dato geography a un procedimiento
-DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213', '4326');
+--DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213', '4326');
 -- Coordenada de Florencia
 
 EXECUTE Buscar_Esclavo_Cercano @latitud = -84.4747213, @longitud = 10.3642467;
 
 SELECT ubicacion.STAsText() from Esclavos;
 
--- Insertar Mensajes
-CREATE PROCEDURE Insertar_Mensaje
-@tipo as int, @emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+-- Agregar un nuevo mensaje en comunicacion de Estudiante a Estudiante
+CREATE PROCEDURE Insertar_Mensaje_E_E
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
 AS
+DECLARE @codigo_mensaje as int
 BEGIN
-	INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) VALUES (@tipo,@emisor,@receptor,@mensaje,@codigo_curso);
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Estudiante_Estudiante(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
 END
 GO
 
-INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) values (1,1,6,'Hola \u{1F604}',1);
-EXECUTE Insertar_Mensaje @tipo = 0, @emisor= 1, @receptor = 2, @mensaje = 'Hola Roberto \u{1F604}', @codigo_curso = 1;
+EXECUTE Insertar_Mensaje_E_E @emisor = 1, @receptor = 2, @mensaje = 'Hola Roberto \u{1F604}', @codigo_curso = 1;
 
-CREATE PROCEDURE Ver_Mensajes_E_E
-@emisor as int, @receptor as int
+-- Agregar un nuevo mensaje en comunicacion de Estudiante a Profesor
+CREATE PROCEDURE Insertar_Mensaje_E_P
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
 AS
+DECLARE @codigo_mensaje as int
 BEGIN
-	
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Estudiante_Profesor(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
 END
 GO
+
+EXECUTE Insertar_Mensaje_E_P @emisor = 1, @receptor = 6, @mensaje = 'Hola Leo\u{1F604}', @codigo_curso = 1;
+
+-- Agregar un nuevo mensaje en comunicacion de Profesor a Estudiante
+CREATE PROCEDURE Insertar_Mensaje_P_E
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+DECLARE @codigo_mensaje as int
+BEGIN
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Profesor_Estudiante(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
+END
+GO
+
+EXECUTE Insertar_Mensaje_P_E @emisor = 7, @receptor = 3, @mensaje = 'Hola estudiante\u{1F604}', @codigo_curso = 2;
+
+-- Agregar un nuevo mensaje en comunicacion de Estudiante a Grupo
+CREATE PROCEDURE Insertar_Mensaje_E_G
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+DECLARE @codigo_mensaje as int
+BEGIN
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Estudiante_Grupo(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
+END
+GO
+
+EXECUTE Insertar_Mensaje_E_G @emisor = 4, @receptor = 1, @mensaje = 'Hola compañeros y profesor\u{1F604}', @codigo_curso = 3;
+
+-- Agregar un nuevo mensaje en comunicacion de Profesor a Grupo
+CREATE PROCEDURE Insertar_Mensaje_P_G
+@emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+DECLARE @codigo_mensaje as int
+BEGIN
+	INSERT INTO Mensajes (mensaje,codigo_curso) VALUES (@mensaje,@codigo_curso);
+	BEGIN 
+		SELECT @codigo_curso = SCOPE_IDENTITY();
+		INSERT INTO Mensajes_Profesor_Grupo(id_mensaje, emisor,receptor) VALUES (@codigo_curso,@emisor,@receptor);
+	END 
+END
+GO
+
+EXECUTE Insertar_Mensaje_P_G @emisor = 8, @receptor = 3, @mensaje = 'Hola muchachos \u{1F604}', @codigo_curso = 3;
+
+
+--Iniciar Sesion
+
+--Drop procedure LOGEO
+CREATE PROCEDURE LOGEO(
+	@Usuario varchar(25),
+	@Contraseña varchar(25)
+)
+as 
+begin 
+ 
+	DECLARE @ID AS varchar(25);
+
+	IF EXISTS (SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña) 
+		BEGIN
+			SET @ID = (SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña) 
+		    SELECT @ID
+		END
+		ELSE
+			BEGIN
+				IF EXISTS (SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña) 
+			BEGIN
+				SET @ID = (SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña)
+				SELECT @ID
+			END
+			ELSE
+			BEGIN
+				SET @ID = 'El nombre de Usuario o contraseña no coinsiden';
+				SELECT @ID
+			END
+		END
+
+end
+
+EXECUTE LOGEO @Usuario='1', @Contraseña = '12345';
 
 SELECT * FROM Mensajes
 
@@ -261,5 +355,24 @@ INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (4,9);
 -- Lenguajes de Programacion --> OscarViquez
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (5,10);
 
+select Estudiantes.nombre as E1, Estudiantes.nombre as E2 from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante INNER JOIN Mensajes on Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
 
-SELECT * FROM Mensajes;
+select emisor, receptor, mensaje from Mensajes_Estudiante_Estudiante INNER JOIN Mensajes on 
+Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
+
+select nombre as E1, nombre as E2, emisor, receptor, mensaje from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on 
+Estudiantes.codigo = emisor and Estudiantes.codigo = receptor INNER JOIN Mensajes on 
+Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
+
+
+select nombre as E1, nombre as E2, emisor, receptor, mensaje from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on 
+Mensajes_Estudiante_Estudiante.emisor = emisor and Mensajes_Estudiante_Estudiante.receptor = receptor JOIN Mensajes on 
+Mensajes.id_mensaje = Mensajes_Estudiante_Estudiante.id_mensaje
+and Mensajes_Estudiante_Estudiante.emisor = 1 and Mensajes_Estudiante_Estudiante.receptor = 2;
+
+
+
+select nombre as E1, nombre as E2 from Estudiantes INNER JOIN Mensajes_Estudiante_Estudiante on emisor = 1 and receptor = 2;

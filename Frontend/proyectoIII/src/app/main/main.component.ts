@@ -31,7 +31,7 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     this.dataSource.data = cursos;
     this.crss = cursos;
-    this.localUser = this.shared.sharedUser.username;
+    //this.localUser = this.shared.sharedUser.username;
     console.log(this.localUser);
 
     this.messageForm = this.formBuilder.group({
