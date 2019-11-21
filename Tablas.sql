@@ -52,21 +52,46 @@ create table Estudiantes_Cursos(
 );
 
 -- Mensajes a nivel general
--- TIPO: Estudiante-Estudiante = 0, Estudiante-Profesor = 1, Estudiante-Grupo = 3, Profesor-Grupo = 4
 create table Mensajes(
-	tipo			int not null, 
-	emisor			int not null,
-	receptor		int not null,
+	id_mensaje		int primary key, 
 	mensaje			varchar(500) not null,
 	codigo_curso	int foreign key (codigo_curso) references Cursos(codigo)
 );
 
--- Foreign Key de todas las tablas posibles emisoras y receptoras
-alter table Mensajes add constraint fk_emisor_e foreign key (emisor) references Estudiantes;
-alter table Mensajes add constraint fk_emisor_p foreign key (emisor) references Profesores;
-alter table Mensajes add constraint fk_receptor_e foreign key (receptor) references Estudiantes;
-alter table Mensajes add constraint fk_receptor_p foreign key (receptor) references Profesores;
-alter table Mensajes add constraint fk_receptor_c foreign key (receptor) references Cursos;
+-- Mensajes de Estudiante a Estudiante
+create table Mensajes_Estudiante_Estudiante(
+	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
+	emisor			int foreign key (emisor) references Estudiantes(codigo),
+	receptor		int foreign key (receptor) references Estudiantes(codigo),
+);
+
+-- Mensajes de Estudiante a Profesor
+create table Mensajes_Estudiante_Profesor(
+	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
+	emisor			int foreign key (emisor) references Estudiantes(codigo),
+	receptor		int foreign key (receptor) references Profesores(codigo),
+);
+
+-- Mensajes de Profesor a Estudiante
+create table Mensajes_Profesor_Estudiante(
+	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
+	emisor			int foreign key (emisor) references Profesores(codigo),
+	receptor		int foreign key (receptor) references Estudiantes(codigo),
+);
+
+-- Mensajes de Profesor a Grupo
+create table Mensajes_Profesor_Grupo(
+	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
+	emisor			int foreign key (emisor) references Profesores(codigo),
+	receptor		int foreign key (receptor) references Cursos(codigo),
+);
+
+-- Mensajes de Estudiantes a Grupo
+create table Mensajes_Estudiantes_Grupo(
+	id_mensaje		int foreign key (id_mensaje) references Mensajes(id_mensaje),
+	emisor			int foreign key (emisor) references Estudiantes(codigo),
+	receptor		int foreign key (receptor) references Cursos(codigo),
+);
 
 --Consulta buscar nombre de id de la tabla Mensajes
 SELECT nombre
@@ -171,6 +196,9 @@ BEGIN
 END
 GO
 
+INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) values (1,1,6,'Hola \u{1F604}',1);
+EXECUTE Insertar_Mensaje @tipo = 0, @emisor= 1, @receptor = 2, @mensaje = 'Hola Roberto \u{1F604}', @codigo_curso = 1;
+
 CREATE PROCEDURE Ver_Mensajes_E_E
 @emisor as int, @receptor as int
 AS
@@ -230,7 +258,8 @@ INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (2,7);
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (3,8);
 -- Matematica Discreta --> KarinaG
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (4,9);
--- Lenguajes de Programacion
+-- Lenguajes de Programacion --> OscarViquez
 INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (5,10);
 
-SELECT * FROM Estudiantes;
+
+SELECT * FROM Mensajes;
