@@ -7,6 +7,7 @@ var logger = require('morgan');
 //RUTAS
 var indexRouter = require('./controllers/indexController');
 var loginRouter = require('./controllers/loginController');
+var consultasRouter = require('./controllers/consultasController');
 
 var app = express()
 
@@ -29,5 +30,7 @@ app.use((req, res, next) => {
 app.use('/',indexRouter);
 //login
 app.use('/login', loginRouter);
+//consultas
+app.use('/consultas', consultasRouter);
 
 module.exports = app;

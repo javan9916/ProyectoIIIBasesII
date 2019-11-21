@@ -1,3 +1,4 @@
+
 create table Esclavos(
 	usuario			VARCHAR(50) NOT NULL,
 	contraseña		VARCHAR(20) NOT NULL,
@@ -31,7 +32,7 @@ create table Estudiantes(
 	nombre		varchar(200) not null,
 	contraseña	varchar(15)	 not null
 );
-drop table Cursos
+--drop table Cursos
 create table Cursos(
 	codigo		int primary key,
 	nombre		varchar(200) not null,
@@ -78,7 +79,10 @@ INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (3,3);
 
 INSERT INTO Mensajes (codigo,emisor,receptor,mensaje) values (1,1,1,'Hola');
 
+SELECT * FROM Cursos;
+
 SELECT * FROM Estudiantes_Cursos;
+SELECT * FROM Profesores;
 
 --Consulta buscar nombre de id de la tabla Mensajes
 SELECT nombre
@@ -112,7 +116,7 @@ GO
 
 EXECUTE Mostrar_Cursos_Estudiantes @codigo_estudiante = 2, @activo = 0
 
-
+go
 CREATE PROCEDURE Mostrar_Cursos_Profesores
 @codigo_profesor as int, @activo as bit
 AS
@@ -124,7 +128,9 @@ BEGIN
 END
 GO
 
-EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 2, @activo = 1
+Select * from Profesores_Cursos
+
+EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 3, @activo = 0
 
 
 CREATE PROCEDURE Mostrar_Estudiantes_Curso
@@ -164,13 +170,38 @@ BEGIN
 END
 GO
 
-drop procedure Buscar_Esclavo_Cercano
+--drop procedure Buscar_Esclavo_Cercano
 
 -- Se debe declarar primero una variable para poder enviar un dato geography a un procedimiento
-DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213', '4326');
+--DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213', '4326');
 -- Coordenada de Florencia
 
 EXECUTE Buscar_Esclavo_Cercano @latitud = -84.4747213, @longitud = 10.3642467;
 
 SELECT ubicacion.STAsText() from Esclavos
+
+--Iniciar Sesion
+
+--Drop procedure LOGEO
+CREATE PROCEDURE LOGEO(
+	@Usuario varchar(25),
+	@Contraseña varchar(25)
+)
+as 
+begin 
+ 
+	DECLARE @Sesiones AS INTEGER;
+
+	Set @Sesiones = (select COUNT(*) from Profesores
+		where codigo=@Usuario and contraseña=@Contraseña)
+
+	Set @Sesiones = @Sesiones + (select COUNT(*) from Profesores
+		where codigo=@Usuario and contraseña=@Contraseña)
+
+	Select @Sesiones
+
+end
+
+EXECUTE LOGEO @Usuario='1', @Contraseña = '12345';
+
 
