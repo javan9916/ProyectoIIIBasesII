@@ -1,3 +1,4 @@
+-- Tabla para almacenar las bases replicadas, solo estará presente en la madre
 create table Esclavos(
 	usuario			VARCHAR(50) NOT NULL,
 	contraseña		VARCHAR(20) NOT NULL,
@@ -31,54 +32,41 @@ create table Estudiantes(
 	nombre		varchar(200) not null,
 	contraseña	varchar(15)	 not null
 );
-drop table Cursos
+
 create table Cursos(
 	codigo		int primary key,
 	nombre		varchar(200) not null,
 	activo		bit not null -- 1 TRUE 0 FALSE
 );
 
+-- Tabla intermedia entre profesores y cursos
 create table Profesores_Cursos(
 	codigo_profesor int foreign key (codigo_profesor) references Profesores(codigo),
 	codigo_curso	int foreign key (codigo_curso) references Cursos(codigo),
 );
 
+-- Tabla intermedia entre estudiantes y cursos
 create table Estudiantes_Cursos(
 	codigo_estudiante int foreign key (codigo_estudiante) references Estudiantes(codigo),
 	codigo_curso	  int foreign key (codigo_curso) references Cursos(codigo),
 );
 
+-- Mensajes a nivel general
+-- TIPO: Estudiante-Estudiante = 0, Estudiante-Profesor = 1, Estudiante-Grupo = 3, Profesor-Grupo = 4
 create table Mensajes(
-	codigo		int primary key,
-	emisor		int,
-	receptor	int,
-	mensaje		varchar(500) not null,
+	tipo			int not null, 
+	emisor			int not null,
+	receptor		int not null,
+	mensaje			varchar(500) not null,
+	codigo_curso	int foreign key (codigo_curso) references Cursos(codigo)
 );
 
+-- Foreign Key de todas las tablas posibles emisoras y receptoras
 alter table Mensajes add constraint fk_emisor_e foreign key (emisor) references Estudiantes;
 alter table Mensajes add constraint fk_emisor_p foreign key (emisor) references Profesores;
 alter table Mensajes add constraint fk_receptor_e foreign key (receptor) references Estudiantes;
 alter table Mensajes add constraint fk_receptor_p foreign key (receptor) references Profesores;
-alter table Mensajes add constraint fk_receptor_c foreign key (receptor) references Estudiantes;
-
-INSERT INTO Estudiantes (codigo,nombre,contraseña) values (1,'Jazmine','12');
-INSERT INTO Estudiantes (codigo,nombre,contraseña) values (2,'Roberto','123');
-
-INSERT INTO Cursos (codigo,nombre,activo) values (1,'Bases de Datos',1);
-INSERT INTO Cursos (codigo,nombre,activo) values (2,'Probabilidades',1);
-INSERT INTO Cursos (codigo,nombre,activo) values (3,'Taller de Programacion',0);
-
-INSERT INTO Profesores (codigo,nombre,contraseña) values (1,'LeoViquez','12345');
-INSERT INTO Profesores (codigo,nombre,contraseña) values (2,'EstebanB','0123');
-INSERT INTO Profesores (codigo,nombre,contraseña) values (3,'VeraG','012');
-
-
-INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (3,2);
-INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (3,3);
-
-INSERT INTO Mensajes (codigo,emisor,receptor,mensaje) values (1,1,1,'Hola');
-
-SELECT * FROM Estudiantes_Cursos;
+alter table Mensajes add constraint fk_receptor_c foreign key (receptor) references Cursos;
 
 --Consulta buscar nombre de id de la tabla Mensajes
 SELECT nombre
@@ -124,7 +112,7 @@ BEGIN
 END
 GO
 
-EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 2, @activo = 1
+EXECUTE Mostrar_Cursos_Profesores @codigo_profesor = 6, @activo = 1
 
 
 CREATE PROCEDURE Mostrar_Estudiantes_Curso
@@ -136,7 +124,7 @@ BEGIN
 END
 GO
 
-EXECUTE Mostrar_Estudiantes_Curso @codigo_curso = 2
+EXECUTE Mostrar_Estudiantes_Curso @codigo_curso = 3
 
 
 CREATE PROCEDURE Mostrar_Profesores_Curso
@@ -150,7 +138,7 @@ GO
 
 EXECUTE Mostrar_Profesores_Curso @codigo_curso = 1
 
-
+-- Busca el usuario mas cercano a partir de la latitud y longitud actual del usuario 
 CREATE PROCEDURE Buscar_Esclavo_Cercano
 @latitud as float, @longitud as float
 AS
@@ -172,5 +160,77 @@ DECLARE @geographyPoint geography = geography::Point('10.3642467','-84.4747213',
 
 EXECUTE Buscar_Esclavo_Cercano @latitud = -84.4747213, @longitud = 10.3642467;
 
-SELECT ubicacion.STAsText() from Esclavos
+SELECT ubicacion.STAsText() from Esclavos;
 
+-- Insertar Mensajes
+CREATE PROCEDURE Insertar_Mensaje
+@tipo as int, @emisor as int, @receptor as int, @mensaje as varchar(500), @codigo_curso as int
+AS
+BEGIN
+	INSERT INTO Mensajes (tipo,emisor,receptor,mensaje,codigo_curso) VALUES (@tipo,@emisor,@receptor,@mensaje,@codigo_curso);
+END
+GO
+
+CREATE PROCEDURE Ver_Mensajes_E_E
+@emisor as int, @receptor as int
+AS
+BEGIN
+	
+END
+GO
+
+SELECT * FROM Mensajes
+
+-- INSERTS 
+INSERT INTO Estudiantes (codigo,nombre,contraseña) values (1,'Jazmine','12');
+INSERT INTO Estudiantes (codigo,nombre,contraseña) values (2,'Roberto','123');
+INSERT INTO Estudiantes (codigo,nombre,contraseña) values (3,'Javier','1234');
+INSERT INTO Estudiantes (codigo,nombre,contraseña) values (4,'Jesus','12345');
+INSERT INTO Estudiantes (codigo,nombre,contraseña) values (5,'Kevin','123456');
+
+INSERT INTO Cursos (codigo,nombre,activo) values (1,'Bases de Datos 2',1);
+INSERT INTO Cursos (codigo,nombre,activo) values (2,'Probabilidades',1);
+INSERT INTO Cursos (codigo,nombre,activo) values (3,'Taller de Programacion',0);
+INSERT INTO Cursos (codigo,nombre,activo) values (4,'Matematica Discreta',0);
+INSERT INTO Cursos (codigo,nombre,activo) values (5,'Lenguajes de Programacion',1);
+
+INSERT INTO Profesores (codigo,nombre,contraseña) values (6,'LeoViquez','012');
+INSERT INTO Profesores (codigo,nombre,contraseña) values (7,'EstebanB','0123');
+INSERT INTO Profesores (codigo,nombre,contraseña) values (8,'VeraG','01234');
+INSERT INTO Profesores (codigo,nombre,contraseña) values (9,'KarinaG','012345')
+INSERT INTO Profesores (codigo,nombre,contraseña) values (10,'OscarViquez','012346');
+
+-- RELACION ESTUDIANTES CURSOS
+-- Bases de Datos 2 --> Jazmine, Roberto y Javier
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (1,1);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (1,2);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (1,3);
+-- Probabilidades --> Roberto y Javier
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (2,2);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (2,3);
+-- Taller de Programacion --> Jesus, Kevin, Jazmine, Roberto, Javier
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (3,1);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (3,2);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (3,3);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (3,4);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (3,5);
+-- Matematica Discreta --> Jesus y Kevin
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (4,4);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (4,5);
+-- Lenguajes --> Jazmine y Roberto
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (5,1);
+INSERT INTO Estudiantes_Cursos (codigo_curso,codigo_estudiante) values (5,2);
+
+-- RELACION PROFESORES CURSOS
+-- Bases de Datos 2 --> LeoViquez
+INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (1,6);
+-- Probabilidades --> EstebanB
+INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (2,7);
+-- Taller de Programacion --> VeraG
+INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (3,8);
+-- Matematica Discreta --> KarinaG
+INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (4,9);
+-- Lenguajes de Programacion
+INSERT INTO Profesores_Cursos (codigo_curso,codigo_profesor) values (5,10);
+
+SELECT * FROM Estudiantes;
