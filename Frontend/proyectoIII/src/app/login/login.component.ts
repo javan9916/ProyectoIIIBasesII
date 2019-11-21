@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { ShareService } from '../services/share/share.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -10,7 +10,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private router: Router, private formBuilder: FormBuilder, private shared: ShareService) { 
+  }
 
   loginForm: FormGroup;
 
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return
     }
+    this.shared.sharedUser = this.loginForm.value;
     this.router.navigateByUrl('/main');
     //do the login stuff with db
   }

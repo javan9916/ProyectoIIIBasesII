@@ -1,19 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatSort, MatDialogConfig, MatTable, MatTableDataSource } from '@angular/material';
+import { ShareService } from '../services/share/share.service';
 import { ActivatedRoute } from '@angular/router';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Curso } from '../models/curso';
 import { Mensaje } from '../models/mensaje';
 
-var cursos: Curso[] = [{codigo: 1, nombre: 'Análisis de algoritmos'},
-                        {codigo: 2, nombre: 'Lenguajes de programación'},
-                        {codigo: 3, nombre: 'Probabilidades'}, 
-                        {codigo: 4, nombre: 'Bases de datos II'}];
-
-var mensajes: Mensaje[] = [ {codigo: 1, emisor: 'Jazmine', receptor: 'Javier', mensaje: 'Hola, ¿cómo está? \u{1F60A}'},
-                            {codigo: 2, emisor: 'Javier', receptor: 'Jazmine', mensaje: 'Súper bien, ¡pasé algoritmos!'},
-                            {codigo: 3, emisor: 'Jazmine', receptor: 'Javier', mensaje: '¡Qué bueno, me alegro!'},
-                            {codigo: 4, emisor: 'Javier', receptor: 'Jazmine', mensaje: ':)'}];
+var cursos: Curso[] = [];
+var mensajes: Mensaje[] = [];
 
 @Component({
   selector: 'app-main',
@@ -30,12 +24,15 @@ export class MainComponent implements OnInit {
   crss: Curso[];
   msjs = mensajes;
   blank = ' ';
+  localUser: string;
 
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute) { }
+  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private shared: ShareService) { }
 
   ngOnInit() {
     this.dataSource.data = cursos;
     this.crss = cursos;
+    this.localUser = this.shared.sharedUser.username;
+    console.log(this.localUser);
 
     this.messageForm = this.formBuilder.group({
       username: ['', Validators.required],
