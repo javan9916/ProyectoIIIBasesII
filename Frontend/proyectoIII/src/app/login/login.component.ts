@@ -33,9 +33,10 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.service.formLogin);
     if(this.service.formLogin.valid){
       this.service.doLogin(this.service.formLogin.value)
-        .subscribe(data =>{ 
+        .subscribe(data => { 
           var loginSubject = data['success']       
           loginSubject.subscribe(data => {
               this.setResultado(data['Resultado'])

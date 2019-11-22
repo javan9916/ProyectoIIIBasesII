@@ -32,6 +32,9 @@ export class LoginService {
   formLogin: FormGroup = new FormGroup({
     UserName: new FormControl('', Validators.required),
     Password: new FormControl('', Validators.required),
+    Server: new FormControl('', Validators.required),
+    Port: new FormControl('', Validators.required),
+    DataBase: new FormControl(null)
   });
 
   inializeFormLogin(){

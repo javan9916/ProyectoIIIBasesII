@@ -168,7 +168,8 @@ exports.InsertarMensajeEP = async (req) => {
             .input('emisor', sql.Int, req.emisor)
             .input('receptor', sql.Int, req.receptor)
             .input('mensaje', sql.VarChar(500), req.mensaje)
-            .input('codigo_curso', sql.Int, req.codigo_curso)input('codigo_curso', sql.Int, req.Usuario)
+            .input('codigo_curso', sql.Int, req.codigo_curso)
+            .input('codigo_curso', sql.Int, req.Usuario)
             .execute('Insertar_Mensaje_E_P');
             
         sql.close();
