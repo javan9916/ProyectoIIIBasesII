@@ -1,4 +1,5 @@
 export interface Curso {
     codigo: number,
-    nombre: string
+    nombre: string,
+    activo: number
 }

@@ -11,10 +11,6 @@ import * as _ from 'lodash';
 export class LoginService {
 
   driver: Array<Usuario>;
-  apiRoute: String = "usuarios";
-  env = {
-    BASE_URL: ''
-  }
 
   uri = 'http://localhost:3001';
 

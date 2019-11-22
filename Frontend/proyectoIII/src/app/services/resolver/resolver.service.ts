@@ -20,6 +20,6 @@ export class ResolverService implements Resolve<any> {
       console.log("La geolocalización no es soportada por este navegador");
     }
     
-    return this._http.get('https://jsonplaceholder.typicode.com/posts');
+    return null;
   }
 }
