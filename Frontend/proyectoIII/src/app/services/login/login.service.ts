@@ -28,9 +28,6 @@ export class LoginService {
   formLogin: FormGroup = new FormGroup({
     UserName: new FormControl('', Validators.required),
     Password: new FormControl('', Validators.required),
-    Server: new FormControl('', Validators.required),
-    Port: new FormControl('', Validators.required),
-    DataBase: new FormControl(null)
   });
 
   inializeFormLogin(){
@@ -46,9 +43,10 @@ export class LoginService {
   doLogin(data){
     return this._http.get(`${this.uri+'/login/login'}`,{
       params: new HttpParams()
-      .set('User', this.formEsclavo.get('usuario').value)
-      .set('Password',this.formEsclavo.get('contrasena').value)
-      .set('Server', this.formEsclavo.get('direccion_ip').value)
+      // .set('User', this.formEsclavo.get('usuario').value)
+      // .set('Password',this.formEsclavo.get('contrasena').value)
+      // .set('Server', this.formEsclavo.get('direccion_ip').value)
+      // .set('database', this.formEsclavo.get('nombre_db').value)
       .set('Usuario', data.UserName)
       .set('Contraseña', data.Password)
     });

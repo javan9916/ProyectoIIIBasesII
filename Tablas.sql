@@ -281,25 +281,29 @@ begin
 	IF EXISTS (SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña) 
 		BEGIN
 			SET @ID = (SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña) 
-		    SELECT @ID
+		    SELECT codigo FROM Profesores WHERE codigo = @Usuario and contraseña=@Contraseña
 		END
 		ELSE
 			BEGIN
 				IF EXISTS (SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña) 
 			BEGIN
 				SET @ID = (SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña)
-				SELECT @ID
+				SELECT codigo FROM Estudiantes WHERE codigo = @Usuario and contraseña=@Contraseña
 			END
 			ELSE
 			BEGIN
 				SET @ID = 'El nombre de Usuario o contraseña no coinsiden';
-				SELECT @ID
+				SELECT @ID 
 			END
 		END
 
 end
 
 EXECUTE LOGEO @Usuario='1', @Contraseña = '12345';
+
+Select * from Estudiantes
+go
+Select * from Profesores
 
 SELECT * FROM Mensajes
 

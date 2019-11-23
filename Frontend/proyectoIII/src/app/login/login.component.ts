@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute, private service: LoginService, 
     private formBuilder: FormBuilder, private shared: ShareService) { }
 
-  loginForm: FormGroup;
+  loginForm: any;
 
   ngOnInit() {
     this.coordenadas = this.route.snapshot.data["cres"];
@@ -37,10 +37,9 @@ export class LoginComponent implements OnInit {
     if(this.service.formLogin.valid){
       this.service.doLogin(this.service.formLogin.value)
         .subscribe(data => { 
-          var loginSubject = data['success']       
-          loginSubject.subscribe(data => {
-              this.setResultado(data['Resultado'])
-            });
+          console.log(data)
+          var loginSubject = data['content']  
+          this.setResultado(loginSubject['0'])   
           });
     } 
     else {
@@ -50,9 +49,10 @@ export class LoginComponent implements OnInit {
     } 
   }
 
-  setResultado(data: boolean){
+  setResultado(data: any){
     let resultado = data;
-    if (resultado == true){
+    console.log(resultado)
+    if (resultado['codigo']){
       console.log('Bienvenido');
       this.router.navigateByUrl('/admin');
     }else{

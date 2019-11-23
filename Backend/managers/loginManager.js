@@ -2,15 +2,16 @@ var sql = require('mssql');
 var connectionSQL = require('../config/connectionSQL');
 
 exports.Login = async (req) => {
+    console.log(req)
     try {
-        let config = {
-            user: req.User,
-            password: req.Password,
-            database: req.database,
-            server: req.Server,
+        // let config = {
+        //     user: req.User,
+        //     password: req.Password,
+        //     database: req.database,
+        //     server: req.Server,
             
-        };
-        let pool = await sql.connect(config);
+        // };
+        let pool = await sql.connect(connectionSQL);
         let result = await pool.request()
             .input('Usuario', sql.VarChar(25), req.Usuario)
             .input('Contraseña', sql.VarChar(25), req.Contraseña)
